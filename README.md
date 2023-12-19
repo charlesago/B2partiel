@@ -1,8 +1,7 @@
-{% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+https://partielcharles.jeremyduc.com/
 
-{% block body %}
+
     <div>
 
         <h1>Routes de base de L'api</h1>
