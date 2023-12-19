@@ -17,13 +17,13 @@
         <p>Enregistrement (Register)</p>
         <p>Méthode HTTP : POST</p>
         <p>Chemin : /register</p>
-<p>Cette route permet aux utilisateurs de créer un compte en fournissant un nom d'utilisateur (username), une adresse e-mail (email), et un mot de passe (password).</p>
+        <p>Cette route permet aux utilisateurs de créer un compte en fournissant un nom d'utilisateur (username) et un mot de passe (password).</p>
         <hr>
 
         <p> Connexion (login)</p>
         <p>Méthode HTTP : POST</p>
         <p>Chemin : /login_check</p>
-        <p>Description : Utilisée pour l'authentification, cette route permet aux utilisateurs de se connecter en fournissant un nom d'utilisateur (username), une adresse e-mail (email) et un mot de passe (password).</p>
+        <p>Description : Utilisée pour l'authentification, cette route permet aux utilisateurs de se connecter en fournissant un nom d'utilisateur (username) et un mot de passe (password).</p>
 
         <hr>
         <p> Deconnexion (logout)</p>
@@ -90,7 +90,7 @@
 
         <hr>
 
-        <p>Recuperer tous les profile</p>
+        <p>Recuperer tous les profiles</p>
         <p>Méthode HTTP : GET</p>
         <p>Chemin : /allprofiles</p>
 
@@ -107,6 +107,25 @@
         <p>Méthode HTTP : PUT</p>
         <p>Chemin : /invitations/accept/{id}</p>
         <p>description: mettre l'id de l'inviations que l'on veut accepter</p>
+
+        <hr>
+
+        <p>creer une contribution</p>
+        <p>Méthode HTTP : POST</p>
+        <p>Chemin : /create/contribution/{eventId}</p>
+        <p>description: mettre l'id de l'evenement dans l'url et mettre une product en requete</p>
+
+        <hr>
+
+        <p>creer une Suggestion</p>
+        <p>Méthode HTTP : POST</p>
+        <p>Chemin : /add/suggestion/{eventId}</p>
+        <p>description: mettre l'id de l'evenement public dans l'url et mettre une product en requete</p>
+
+        <p>accepter une Suggestion</p>
+        <p>Méthode HTTP : POST</p>
+        <p>Chemin : /accept/suggestion/{suggestionId}</p>
+        <p>description: mettre l'id de lal suggestion dans l'url</p>
 
     </div>
 {% endblock %}
