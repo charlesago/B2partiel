@@ -37,10 +37,10 @@ class Event
     #[Groups(['Event'])]
     private ?Profile $author = null;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(['Event'])]
-    private ?bool $privateStatus = null;
 
+    #[Groups(['Event'])]
+    #[ORM\Column]
+    private ?bool $privateStatus = null;
     #[ORM\Column(length: 255)]
     #[Groups(['Event'])]
     private ?bool $privatePlace = null;
@@ -51,10 +51,19 @@ class Event
     #[ORM\OneToMany(mappedBy: 'toEvent', targetEntity: Invitation::class)]
     private Collection $invitations;
 
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: Suggestion::class, orphanRemoval: true)]
+    #[Groups(["forGroupIndexing"])]
+    private Collection $suggestions;
+
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: Contribution::class)]
+    private Collection $contributions;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
         $this->invitations = new ArrayCollection();
+        $this->suggestions = new ArrayCollection();
+        $this->contributions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -122,12 +131,12 @@ class Event
         return $this;
     }
 
-    public function getPrivateStatus(): ?string
+    public function getPrivateStatus(): ?bool
     {
         return $this->privateStatus;
     }
 
-    public function setPrivateStatus(string $privatestatus): static
+    public function setPrivateStatus(bool $privatestatus): static
     {
         $this->privateStatus = $privatestatus;
 
@@ -194,6 +203,66 @@ class Event
             // set the owning side to null (unless already changed)
             if ($invitation->getToEvent() === $this) {
                 $invitation->setToEvent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Suggestion>
+     */
+    public function getSuggestions(): Collection
+    {
+        return $this->suggestions;
+    }
+
+    public function addSuggestion(Suggestion $suggestion): static
+    {
+        if (!$this->suggestions->contains($suggestion)) {
+            $this->suggestions->add($suggestion);
+            $suggestion->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSuggestion(Suggestion $suggestion): static
+    {
+        if ($this->suggestions->removeElement($suggestion)) {
+            // set the owning side to null (unless already changed)
+            if ($suggestion->getEvent() === $this) {
+                $suggestion->setEvent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contribution>
+     */
+    public function getContributions(): Collection
+    {
+        return $this->contributions;
+    }
+
+    public function addContribution(Contribution $contribution): static
+    {
+        if (!$this->contributions->contains($contribution)) {
+            $this->contributions->add($contribution);
+            $contribution->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContribution(Contribution $contribution): static
+    {
+        if ($this->contributions->removeElement($contribution)) {
+            // set the owning side to null (unless already changed)
+            if ($contribution->getEvent() === $this) {
+                $contribution->setEvent(null);
             }
         }
 

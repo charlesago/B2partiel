@@ -14,30 +14,42 @@ class Profile
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['show_profiles', 'User'])]
+    #[Groups(['show_profiles', 'User', 'Event', 'invitations','forGroupIndexing'])]
     private ?int $id = null;
 
     #[ORM\OneToOne( inversedBy: 'profile', cascade: ['persist', 'remove'])]
     private ?User $ofUser = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['show_profiles', 'User'])]
+    #[Groups(['show_profiles', 'User', 'Event', 'invitations','forGroupIndexing'])]
     private ?string $username = null;
 
+
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Event::class)]
+
     private Collection $events;
 
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
+
     private Collection $participantsEvent;
 
     #[ORM\OneToMany(mappedBy: 'receive', targetEntity: Invitation::class)]
+
     private Collection $invitations;
+
+    #[ORM\OneToMany(mappedBy: 'issent', targetEntity: Suggestion::class)]
+    private Collection $suggestions;
+
+    #[ORM\OneToMany(mappedBy: 'responseProfile', targetEntity: Contribution::class)]
+    private Collection $contributions;
 
     public function __construct()
     {
         $this->events = new ArrayCollection();
         $this->participantsEvent = new ArrayCollection();
         $this->invitations = new ArrayCollection();
+        $this->suggestions = new ArrayCollection();
+        $this->contributions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,6 +162,66 @@ class Profile
             // set the owning side to null (unless already changed)
             if ($invitation->getReceive() === $this) {
                 $invitation->setReceive(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Suggestion>
+     */
+    public function getSuggestions(): Collection
+    {
+        return $this->suggestions;
+    }
+
+    public function addSuggestion(Suggestion $suggestion): static
+    {
+        if (!$this->suggestions->contains($suggestion)) {
+            $this->suggestions->add($suggestion);
+            $suggestion->setIssent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSuggestion(Suggestion $suggestion): static
+    {
+        if ($this->suggestions->removeElement($suggestion)) {
+            // set the owning side to null (unless already changed)
+            if ($suggestion->getIssent() === $this) {
+                $suggestion->setIssent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contribution>
+     */
+    public function getContributions(): Collection
+    {
+        return $this->contributions;
+    }
+
+    public function addContribution(Contribution $contribution): static
+    {
+        if (!$this->contributions->contains($contribution)) {
+            $this->contributions->add($contribution);
+            $contribution->setResponseProfile($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContribution(Contribution $contribution): static
+    {
+        if ($this->contributions->removeElement($contribution)) {
+            // set the owning side to null (unless already changed)
+            if ($contribution->getResponseProfile() === $this) {
+                $contribution->setResponseProfile(null);
             }
         }
 
